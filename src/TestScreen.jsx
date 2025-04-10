@@ -33,7 +33,7 @@ function MCQGenerator() {
     setScore(null);
   };  
 
-  const startTest = async (topic, level = "Easy") => {
+  const startTest = async (topic, level) => {
     setSelectedTopic(topic);
     setLoading(true);
     setFeedback(null);
@@ -57,7 +57,7 @@ function MCQGenerator() {
   
       if (!data || !Array.isArray(data.questions) || data.questions.length === 0) {
         console.warn("No MCQs received from API");
-        setTimeout(() => startTest(topic, level), 1000)
+        // setTimeout(() => startTest(topic, "Easy"), 1000)
         setQuestions([]);
       } else {
         setQuestions(data.questions);
@@ -93,7 +93,8 @@ function MCQGenerator() {
         body: JSON.stringify({
           level: currentLevel,
           topic: selectedTopic,
-          questions: questions.map(q => q.question),
+          questions: questions,
+          // questions: questions.map(q => q.question),
           answers: answers,
           correct_answers: questions.map(q => q.answer),
           question_type : questionType
@@ -116,17 +117,21 @@ function MCQGenerator() {
           setShowFeedbackOnly(true);
           setQuestionType("Main");
 
-          if (result.incorrect_subtopics && Array.isArray(result.incorrect_subtopics)) {
-            setIncorrectSubtopics(result.incorrect_subtopics);
-          }
-          
+          if (result.Sub_topics && Array.isArray(result.Sub_topics)) {
+            const cleanedSubtopics = result.Sub_topics.map(sub =>
+              sub.replace(/[\n\r]+/g, " ").trim()
+            );
+            setIncorrectSubtopics(cleanedSubtopics);
+          }         
 
           setTimeout(() => {
+            setShowFeedbackOnly(false);
             resetTest();
           }, 10000);
         }
          else {
           startTest(selectedTopic, result.next_level);
+          setCurrentLevel(result.next_level);
         }
       } else if (result.message === "Remedial Questions") {
         setQuestions(result.questions);
@@ -139,17 +144,17 @@ function MCQGenerator() {
         ? `You need more practice. Final Score: ${result.score.toFixed(2)}%`
         : "You need more practice.";
 
-        const subtopics = result.incorrect_subtopics?.length
-        ? `\n\nIncorrect Subtopics: ${result.incorrect_subtopics.join(", ")}`
+        const subtopics = result.Sub_topics?.length
+        ? `\n\nIncorrect Subtopics: ${result.Sub_topics.join(", ")}`
         : "";
 
-        setFeedback(finalMessage + subtopics);
+        setFeedback(finalMessage);
         setScore(result.score !== undefined ? result.score.toFixed(2) : null);
         setShowFeedbackOnly(true);
         setQuestionType("Main");
 
-        if (result.incorrect_subtopics && Array.isArray(result.incorrect_subtopics)) {
-          setIncorrectSubtopics(result.incorrect_subtopics);
+        if (result.Sub_topics && Array.isArray(result.Sub_topics)) {
+          setIncorrectSubtopics(result.Sub_topics);
         }
         
 
@@ -161,8 +166,8 @@ function MCQGenerator() {
         setShowFeedbackOnly(true);
         setScore(result.score !== undefined ? result.score.toFixed(2) : null);
 
-        if (result.incorrect_subtopics && Array.isArray(result.incorrect_subtopics)) {
-          setIncorrectSubtopics(result.incorrect_subtopics);
+        if (result.Sub_topics && Array.isArray(result.Sub_topics)) {
+          setIncorrectSubtopics(result.Sub_topics);
         }
         
 
@@ -214,7 +219,7 @@ function MCQGenerator() {
           <div className="row">
             {topics.map((topic) => (
               <div key={topic} className="col-md-4 mb-3">
-                <button className="btn btn-primary w-100 topic-button" onClick={() => startTest(topic)}>
+                <button className="btn btn-primary w-100 topic-button" onClick={() => startTest(topic, "Easy")}>
                   {topic}
                 </button>
               </div>
