@@ -116,9 +116,10 @@ function MCQGenerator() {
           setShowFeedbackOnly(true);
           setQuestionType("Main");
 
-          if (result.Sub_topics && Array.isArray(result.Sub_topics)) {
-            setIncorrectSubtopics(result.Sub_topics);
+          if (result.incorrect_subtopics && Array.isArray(result.incorrect_subtopics)) {
+            setIncorrectSubtopics(result.incorrect_subtopics);
           }
+          
 
           setTimeout(() => {
             resetTest();
@@ -147,9 +148,10 @@ function MCQGenerator() {
         setShowFeedbackOnly(true);
         setQuestionType("Main");
 
-        if (result.Sub_topics && Array.isArray(result.Sub_topics)) {
-          setIncorrectSubtopics(result.Sub_topics);
+        if (result.incorrect_subtopics && Array.isArray(result.incorrect_subtopics)) {
+          setIncorrectSubtopics(result.incorrect_subtopics);
         }
+        
 
         setTimeout(() => {
           resetTest();
@@ -159,9 +161,10 @@ function MCQGenerator() {
         setShowFeedbackOnly(true);
         setScore(result.score !== undefined ? result.score.toFixed(2) : null);
 
-        if (result.Sub_topics && Array.isArray(result.Sub_topics)) {
-          setIncorrectSubtopics(result.Sub_topics);
+        if (result.incorrect_subtopics && Array.isArray(result.incorrect_subtopics)) {
+          setIncorrectSubtopics(result.incorrect_subtopics);
         }
+        
 
         setTimeout(() => { // Return to topic selection after 5 seconds
           setSelectedTopic(null);
