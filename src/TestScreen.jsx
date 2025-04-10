@@ -144,7 +144,7 @@ function MCQGenerator() {
         ? `You need more practice. Final Score: ${result.score.toFixed(2)}%`
         : "You need more practice.";
 
-        const subtopics = result.Sub_topics?.length
+        const subtopics = result.Sub_topics.length
         ? `\n\nIncorrect Subtopics: ${result.Sub_topics.join(", ")}`
         : "";
 
