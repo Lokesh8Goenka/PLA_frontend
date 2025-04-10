@@ -18,7 +18,6 @@ function MCQGenerator() {
   const [questionType, setQuestionType] = useState("Main");
   const [score, setScore] = useState(null);
   
-
   const resetTest = () => {
     setSelectedTopic(null);
     setQuestions([]);
