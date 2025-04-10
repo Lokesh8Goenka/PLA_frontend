@@ -17,7 +17,9 @@ function MCQGenerator() {
   const [showFeedbackOnly, setShowFeedbackOnly] = useState(false);
   const [questionType, setQuestionType] = useState("Main");
   const [score, setScore] = useState(null);
-  
+  const [incorrectSubtopics, setIncorrectSubtopics] = useState([]);
+
+    
   const resetTest = () => {
     setSelectedTopic(null);
     setQuestions([]);
@@ -55,6 +57,7 @@ function MCQGenerator() {
   
       if (!data || !Array.isArray(data.questions) || data.questions.length === 0) {
         console.warn("No MCQs received from API");
+        setTimeout(() => startTest(topic, level), 1000)
         setQuestions([]);
       } else {
         setQuestions(data.questions);
@@ -112,9 +115,14 @@ function MCQGenerator() {
           setScore(result.score !== undefined ? result.score.toFixed(2) : null);
           setShowFeedbackOnly(true);
           setQuestionType("Main");
+
+          if (result.Sub_topics && Array.isArray(result.Sub_topics)) {
+            setIncorrectSubtopics(result.Sub_topics);
+          }
+
           setTimeout(() => {
             resetTest();
-          }, 5000);
+          }, 10000);
         }
          else {
           startTest(selectedTopic, result.next_level);
@@ -129,18 +137,32 @@ function MCQGenerator() {
         const finalMessage = result.score !== undefined
         ? `You need more practice. Final Score: ${result.score.toFixed(2)}%`
         : "You need more practice.";
-        setFeedback(finalMessage);
+
+        const subtopics = result.incorrect_subtopics?.length
+        ? `\n\nIncorrect Subtopics: ${result.incorrect_subtopics.join(", ")}`
+        : "";
+
+        setFeedback(finalMessage + subtopics);
         setScore(result.score !== undefined ? result.score.toFixed(2) : null);
         setShowFeedbackOnly(true);
         setQuestionType("Main");
 
+        if (result.Sub_topics && Array.isArray(result.Sub_topics)) {
+          setIncorrectSubtopics(result.Sub_topics);
+        }
+
         setTimeout(() => {
           resetTest();
-        }, 5000);
+        }, 10000);
       } else {
         setFeedback(result.message);
         setShowFeedbackOnly(true);
         setScore(result.score !== undefined ? result.score.toFixed(2) : null);
+
+        if (result.Sub_topics && Array.isArray(result.Sub_topics)) {
+          setIncorrectSubtopics(result.Sub_topics);
+        }
+
         setTimeout(() => { // Return to topic selection after 5 seconds
           setSelectedTopic(null);
           setShowFeedbackOnly(true);
@@ -170,6 +192,17 @@ function MCQGenerator() {
             <p className="alert alert-success mt-2">
               Your final score is <strong>{score}%</strong>
             </p>
+          )}
+          {/* 🔥 Show Incorrect Subtopics if present */}
+          {incorrectSubtopics.length > 0 && (
+            <div className="alert alert-warning mt-3 text-start">
+              <h5>Subtopics you struggled with:</h5>
+              <ul>
+                {incorrectSubtopics.map((subtopic, idx) => (
+                  <li key={idx}>{subtopic}</li>
+                ))}
+              </ul>
+            </div>
           )}
         </>
       ) : !selectedTopic ? (
