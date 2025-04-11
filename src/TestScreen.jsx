@@ -165,7 +165,6 @@ function MCQGenerator() {
           setIncorrectSubtopics(result.Sub_topics);
         }
         
-
         setTimeout(() => {
           resetTest();
         }, 10000);
