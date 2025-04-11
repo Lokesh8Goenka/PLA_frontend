@@ -1,3 +1,18 @@
+import React from "react";
+import TestScreen from "./TestScreen";
+import "bootstrap/dist/css/bootstrap.min.css";
+
+
+function App() {
+  return (
+    <div className="App">
+      <TestScreen topic="History" />
+    </div>
+  );
+}
+
+export default App;
+
 // import React from "react";
 // import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 // import Home from "./Home"; // the card view you pasted above
@@ -20,18 +35,4 @@
 // export default App;
 
 
-import React from "react";
-import TestScreen from "./TestScreen";
-import "bootstrap/dist/css/bootstrap.min.css";
-
-
-function App() {
-  return (
-    <div className="App">
-      <TestScreen topic="History" />
-    </div>
-  );
-}
-
-export default App;
 
