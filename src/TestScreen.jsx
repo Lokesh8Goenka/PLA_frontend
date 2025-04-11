@@ -256,7 +256,9 @@ function MCQGenerator() {
         <p className="loading-text">Generating MCQs...</p>
       ) : (
         <div className="mcq-test text-center">
-          <h4>{questions[currentQuestionIndex].question}</h4>
+          <div style={{ whiteSpace: 'pre-line', fontSize: '1.25rem',textAlign: 'left'}}>
+            {questions[currentQuestionIndex].question}
+          </div>
           <div className="d-grid gap-2 mt-3">
             {["A", "B", "C", "D"].map((option, index) => (
               <button
