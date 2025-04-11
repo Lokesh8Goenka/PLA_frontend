@@ -3,10 +3,17 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "./styles.css";
 
 const API_URL = "https://quiet-safely-pegasus.ngrok-free.app";
-const topics = ["Agriculture", "Women", "Constitution", "Banking", "Language", "Climate"];
+const subjects = {
+  History: ["World War I", "Language", "Constitution"],
+  Geography: ["Agriculture", "Climate"],
+  Economics: ["Banking"],
+  "Political Science": ["Women"]
+};
+
 
 function MCQGenerator() {
   const [selectedTopic, setSelectedTopic] = useState(null);
+  const [selectedSubject, setSelectedSubject] = useState(null);
   const [questions, setQuestions] = useState([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [userAnswers, setUserAnswers] = useState([]);
@@ -22,6 +29,7 @@ function MCQGenerator() {
     
   const resetTest = () => {
     setSelectedTopic(null);
+    setSelectedSubject(null);
     setQuestions([]);
     setUserAnswers([]);
     setFeedback(null);
@@ -127,7 +135,7 @@ function MCQGenerator() {
           setTimeout(() => {
             setShowFeedbackOnly(false);
             resetTest();
-          }, 10000);
+          }, 5000);
         }
          else {
           startTest(selectedTopic, result.next_level);
@@ -213,13 +221,32 @@ function MCQGenerator() {
             </div>
           )}
         </>
+      ) : !selectedSubject ? (
+        <>
+          <h2 className="mb-3">Select a Subject</h2>
+          <div className="row">
+            {Object.keys(subjects).map((subject) => (
+              <div key={subject} className="col-md-4 mb-3">
+                <button className="btn btn-secondary w-100" onClick={() => setSelectedSubject(subject)}>
+                  {subject}
+                </button>
+              </div>
+            ))}
+          </div>
+        </>
       ) : !selectedTopic ? (
         <>
-          <h2 className="mb-3">Select a Topic</h2>
+          <h2 className="mb-3">Select a Topic in {selectedSubject}</h2>
+          <button className="btn btn-link mt-3" onClick={() => setSelectedSubject(null)}>
+            Back to Subjects
+          </button>
           <div className="row">
-            {topics.map((topic) => (
+            {subjects[selectedSubject].map((topic) => (
               <div key={topic} className="col-md-4 mb-3">
-                <button className="btn btn-primary w-100 topic-button" onClick={() => startTest(topic, "Easy")}>
+                <button
+                  className="btn btn-primary w-100"
+                  onClick={() => startTest(topic, "Easy")}
+                >
                   {topic}
                 </button>
               </div>
